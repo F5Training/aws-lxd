@@ -1,0 +1,15 @@
+localhost
+
+[ubuntu]
+ubuntu1
+ubuntu2
+
+[lxd-ubuntu]
+lxd-ubuntu1
+lxd-ubuntu2
+
+[lxd-containers:children]
+lxd-ubuntu
+
+[ssh-hosts:children]
+ubuntu

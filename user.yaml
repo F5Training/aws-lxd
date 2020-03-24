@@ -1,0 +1,23 @@
+---
+# An example for creating a Ubuntu & Centos containers
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+    - name: Get current user
+      local_action: command whoami
+      register: user
+
+    - name: Check if id_rsa is present
+      stat:
+        path: "/home/{{ user.stdout }}/.ssh/id_rsa"
+      register: file_stat
+      ignore_errors: true
+
+    - name: debug
+      debug: var=user.stdout
+
+    - name: debug
+      debug: var=file_stat

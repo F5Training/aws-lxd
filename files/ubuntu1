@@ -1,0 +1,4 @@
+{'limits.cpu': '1',
+ 'limits.memory': '256MB',
+ 'user.network-config': 'version: 1\nconfig:\n  - type: physical\n    name: eth0\n    subnets:\n      - type: dhcp\n        ipv4: true\n        control: auto\n  - type: physical\n    name: eth1\n    subnets:\n      - type: static\n        ipv4: true\n        address: 192.168.0.42\n        netmask: 255.255.255.0\n        control: auto\n',
+ 'user.user-data': '#cloud-config\npackage_update: true\npackage_upgrade: true\npackages:\n  - python\n  - python3\ngroups:\n  - localadmin\nusers:\n  - name: localadmin\n    gecos: localadmin\n    primary-group: localadmin\n    groups: admin, docker\n    shell: /bin/bash\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDnuBvgynC5OtxbhSVZL2H6s3GSpc3LtIovNCUGSsOwL ca:be:fe:08:68:f8:bb:45:c8:78:70:a7:76:46:7b:a2 xenial-cloud-ed25519-key-20160502\nlocale: en_SG.UTF-8\nlocale_configfile: /etc/default/locale\n'}

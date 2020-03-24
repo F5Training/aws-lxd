@@ -1,0 +1,19 @@
+---
+
+- name: test out yaml to json filter
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - name: to json filter
+      set_fact:
+        ip_address: "{{ hostvars[item].ip_address }}"
+      loop: "{{ ubuntu }}"
+      
+
+    - name: hostvars
+      debug:
+        msg: "{{ hostvars[item].ip_address }}"
+      loop: "{{ ubuntu }}"

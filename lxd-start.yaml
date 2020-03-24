@@ -1,0 +1,104 @@
+---
+# vim:ft=yaml.ansible:
+# An example for creating a Ubuntu & Centos containers
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+    - name: Get current user
+      local_action: command whoami
+      register: user
+
+    - name: Check if id_ed25519 is present
+      stat:
+        path: "/home/{{ user.stdout }}/.ssh/id_ed25519"
+      register: file_stat
+
+    - name: Create id_ed25519 if not present
+      local_action:
+        "command ssh-keygen -f /home/{{ user.stdout }}/.ssh/id_ed25519 -t ed25519 -N ''"
+      when: file_stat.stat.exists == false
+
+    - name: Create ubuntu containers
+      lxd_container:
+        name: "{{ item }}"
+        state: started
+        source:
+          type: image
+          mode: pull
+          server: https://cloud-images.ubuntu.com/daily
+          protocol: simplestreams
+          alias: 18.04/amd64
+        profiles: ["default", "ansible-class", "{{ item }}"]
+        wait_for_ipv4_addresses: false
+        timeout: 600
+      loop: "{{ lookup('inventory_hostnames', 'ubuntu', wantlist=True) }}"
+      tags:
+        - ubuntu
+
+- hosts: lxd-ubuntu
+  connection: lxd
+  gather_facts: no
+  tags:
+    - ubuntu
+
+  tasks:
+
+    - name: Wait until Cloud-init finished before continuing
+      raw: cloud-init status
+      register: result
+      until: result.stdout.find("done") != -1
+      retries: 15
+      delay: 10
+
+    - name: debug Cloud-init
+      debug:
+        var: result
+
+    - name: setup facts for distribution info
+      setup:
+        gather_subset: distribution
+
+    - name: Display Distribution
+      debug:
+        msg: "Distribution: {{ ansible_distribution }} | Release: {{ ansible_distribution_release }} | Version: {{ ansible_distribution_version }}" 
+
+    - name: Add an apt key by id for Docker CE
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 0EBFCD88
+
+    - name: Add specified repository into sources list
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu artful stable
+        state: present
+
+    - name: Install required packages
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - python-git
+        - cowsay
+        - jq
+        - httpie
+
+    - name: mkdir .ssh dirctory
+      file:
+        path: /home/localadmin/.ssh
+        state: directory
+        owner: localadmin
+        group: localadmin
+        mode: 0700
+
+    - name: set authorized key for localadmin copying from current user
+      authorized_key:
+        user: localadmin
+        state: present
+        key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
+
+...

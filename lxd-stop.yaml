@@ -1,0 +1,40 @@
+---
+# An example for creating a Ubuntu & Centos containers
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+    - name: Get current user
+      local_action: command whoami
+      register: user
+
+    - name: Delete id_ed25519 if present
+      file:
+        state: absent
+        path: "{{ item }}"
+      with_items:
+        - "/home/{{ user.stdout }}/.ssh/id_ed25519"
+        - "/home/{{ user.stdout }}/.ssh/id_ed25519.pub"
+      tags:
+        - delete id_ed25519 files
+
+    - name: Remove know_hosts entries
+      shell: "for i in {1..2}; do ssh-keygen -R 10.10.0.${i}; done"
+      become: no
+      args:
+        executable: /bin/bash
+      ignore_errors: yes
+      tags:
+        - remove known_hosts entries
+
+    - name: Delete containers
+      lxd_container:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ lookup('inventory_hostnames', 'ssh-hosts', wantlist=True) }}"
+      tags:
+        - delete containers
+
+...
