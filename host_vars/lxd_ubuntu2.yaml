@@ -1,0 +1,2 @@
+ansible_host: ubuntu2
+ip_address: 10.10.0.2

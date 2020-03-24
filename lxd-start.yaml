@@ -56,7 +56,7 @@
       tags:
         - ubuntu
 
-- hosts: lxd-ubuntu
+- hosts: lxd_ubuntu
   connection: lxd
   gather_facts: no
   tags:

@@ -3,10 +3,12 @@ localhost
 [ubuntu]
 ubuntu1
 ubuntu2
+ubuntu3
 
 [lxd_ubuntu]
 lxd_ubuntu1
 lxd_ubuntu2
+lxd_ubuntu3
 
 [lxd_containers:children]
 lxd_ubuntu

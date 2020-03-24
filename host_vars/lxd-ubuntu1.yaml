@@ -1,4 +1,0 @@
-ansible_connection: lxd
-ansible_host: ubuntu1
-ansible_lxd_host: localhost
-ip_address: 10.10.0.1
