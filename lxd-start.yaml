@@ -21,23 +21,6 @@
         "command ssh-keygen -f /home/{{ user.stdout }}/.ssh/id_ed25519 -t ed25519 -N ''"
       when: file_stat.stat.exists == false
 
-    - name: Create ubuntu containers
-      lxd_container:
-        name: "{{ item }}"
-        state: started
-        source:
-          type: image
-          mode: pull
-          server: https://cloud-images.ubuntu.com/daily
-          protocol: simplestreams
-          alias: 18.04/amd64
-        profiles: ["default", "ansible-class", "{{ item }}"]
-        wait_for_ipv4_addresses: false
-        timeout: 600
-      loop: "{{ lookup('inventory_hostnames', 'ubuntu', wantlist=True) }}"
-      tags:
-        - ubuntu
-
     - name: Create ubuntu1 profile
       lxd_profile:
         name: ubuntu1
@@ -55,6 +38,23 @@
         name: ubuntu3
         state: present
         config: "{{ lookup('file', 'ubuntu3') | from_yaml | to_json }}"
+
+    - name: Create ubuntu containers
+      lxd_container:
+        name: "{{ item }}"
+        state: started
+        source:
+          type: image
+          mode: pull
+          server: https://cloud-images.ubuntu.com/daily
+          protocol: simplestreams
+          alias: 18.04/amd64
+        profiles: ["default", "ansible-class", "{{ item }}"]
+        wait_for_ipv4_addresses: false
+        timeout: 600
+      loop: "{{ lookup('inventory_hostnames', 'ubuntu', wantlist=True) }}"
+      tags:
+        - ubuntu
 
 - hosts: lxd-ubuntu
   connection: lxd
@@ -81,7 +81,7 @@
 
     - name: Display Distribution
       debug:
-        msg: "Distribution: {{ ansible_distribution }} | Release: {{ ansible_distribution_release }} | Version: {{ ansible_distribution_version }}" 
+        msg: "Distribution: {{ ansible_distribution }} | Release: {{ ansible_distribution_release }} | Version: {{ ansible_distribution_version }}"
 
     - name: Add an apt key by id for Docker CE
       apt_key:
