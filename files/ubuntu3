@@ -13,8 +13,8 @@ config:
         subnets:
           - type: static
             ipv4: true
-            address: 10.10.0.2
+            address: 10.10.0.3
             netmask: 255.255.255.0
             control: auto
 description: ""
-name: ubuntu2
+name: ubuntu3

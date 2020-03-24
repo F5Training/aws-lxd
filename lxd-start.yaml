@@ -38,6 +38,24 @@
       tags:
         - ubuntu
 
+    - name: Create ubuntu1 profile
+      lxd_profile:
+        name: ubuntu1
+        state: present
+        config: {{ lookup('file', 'ubuntu1') | from_yaml | to_json }}
+
+    - name: Create ubuntu2 profile
+      lxd_profile:
+        name: ubuntu1
+        state: present
+        config: {{ lookup('file', 'ubuntu2') | from_yaml | to_json }}
+
+    - name: Create ubuntu1 profile
+      lxd_profile:
+        name: ubuntu3
+        state: present
+        config: {{ lookup('file', 'ubuntu3') | from_yaml | to_json }}
+
 - hosts: lxd-ubuntu
   connection: lxd
   gather_facts: no
