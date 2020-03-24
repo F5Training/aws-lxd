@@ -1,3 +1,4 @@
 play.yaml
 loop.yaml
 library/*
+.vscode/*
