@@ -4,12 +4,12 @@ localhost
 ubuntu1
 ubuntu2
 
-[lxd-ubuntu]
-lxd-ubuntu1
-lxd-ubuntu2
+[lxd_ubuntu]
+lxd_ubuntu1
+lxd_ubuntu2
 
-[lxd-containers:children]
-lxd-ubuntu
+[lxd_containers:children]
+lxd_ubuntu
 
-[ssh-hosts:children]
+[ssh_hosts:children]
 ubuntu
