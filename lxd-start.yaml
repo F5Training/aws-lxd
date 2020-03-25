@@ -21,12 +21,6 @@
         "command ssh-keygen -f /home/{{ user.stdout }}/.ssh/id_ed25519 -t ed25519 -N ''"
       when: file_stat.stat.exists == false
 
-      - name: Create ansible-class profile
-      lxd_profile:
-        name: ansible-class
-        state: present
-        config: "{{ lookup('file', 'ansible-class') | from_yaml | to_json }}"
-
     - name: Create ubuntu1 profile
       lxd_profile:
         name: ubuntu1
