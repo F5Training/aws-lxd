@@ -49,15 +49,15 @@ profiles:
       package_upgrade: true
       packages:
         - python
-      groups:
-        - localadmin
-      users:
-        - name: localadmin
-          gecos: localadmin
-          primary-group: localadmin
-          groups: admin, docker
-          shell: /bin/bash
-          sudo: ALL=(ALL) NOPASSWD:ALL
+#      groups:
+#        - localadmin
+#      users:
+#        - name: localadmin
+#          gecos: localadmin
+#          primary-group: localadmin
+#          groups: admin, docker
+#          shell: /bin/bash
+#          sudo: ALL=(ALL) NOPASSWD:ALL
       locale: en_SG.UTF-8
       locale_configfile: /etc/default/locale
   description: ""
