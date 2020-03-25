@@ -21,7 +21,7 @@
         "command ssh-keygen -f /home/{{ user.stdout }}/.ssh/id_ed25519 -t ed25519 -N ''"
       when: file_stat.stat.exists == false
 
-      - name: Create ansible-class common profile
+    - name: Create ansible-class common profile
       lxd_profile:
         name: ansible-class
         state: present
@@ -54,7 +54,7 @@
       lxd_profile:
         name: "{{ item }}"
         state: present
-        config: "{{ lookup('file', item ) | from_yaml | to_json }}"
+        config: "{{ lookup('file', item + '.yaml') | from_yaml | to_json }}"
       loop: "{{ lookup('inventory_hostnames', 'ubuntu', wantlist=True) }}"
 
     - name: Create ubuntu containers
