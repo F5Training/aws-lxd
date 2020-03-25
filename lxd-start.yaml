@@ -1,6 +1,6 @@
 ---
 # vim:ft=yaml.ansible:
-# An example for creating a Ubuntu & Centos containers
+# An example for creating Ubuntu containers
 - hosts: localhost
   connection: local
   gather_facts: no
@@ -21,17 +21,41 @@
         "command ssh-keygen -f /home/{{ user.stdout }}/.ssh/id_ed25519 -t ed25519 -N ''"
       when: file_stat.stat.exists == false
 
-    - name: Create ubuntu1 profile
+      - name: Create ansible-class common profile
       lxd_profile:
-        name: ubuntu1
+        name: ansible-class
         state: present
-        config: "{{ lookup('file', 'ubuntu1') | from_yaml | to_json }}"
+        config: "{{ lookup('file', 'ansible-class') | from_yaml | to_json }}"
+        description: common profile for all instances
+        devices:
+          eth1:
+            nictype: bridged
+            parent: lxdbr1
+            type: nic
 
-    - name: Create ubuntu2 profile
+- hosts: ubuntu
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+    - name: Create ubuntu instance profiles from template
+      template:
+        src: ubuntu.j2
+        dest: "files/{{ ansible_hostname }}.yaml"
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+    - name: Create ubuntu instance profiles in LXD
       lxd_profile:
-        name: ubuntu2
+        name: "{{ item }}"
         state: present
-        config: "{{ lookup('file', 'ubuntu2') | from_yaml | to_json }}"
+        config: "{{ lookup('file', item ) | from_yaml | to_json }}"
+      loop: "{{ lookup('inventory_hostnames', 'ubuntu', wantlist=True) }}"
 
     - name: Create ubuntu containers
       lxd_container:
@@ -98,6 +122,12 @@
         - cowsay
         - jq
         - httpie
+
+    - name: Install yq
+      snap:
+        name:
+          -yq
+        state: present
 
     - name: mkdir .ssh dirctory
       file:

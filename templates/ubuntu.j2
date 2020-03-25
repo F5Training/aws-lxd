@@ -12,6 +12,6 @@ user.network-config: |
       subnets:
         - type: static
           ipv4: true
-          address: 10.10.0.1
+          address: "{{ ansible_host }}"
           netmask: 255.255.255.0
           control: auto
