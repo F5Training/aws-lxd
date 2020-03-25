@@ -29,7 +29,7 @@
 
     - name: Create ubuntu2 profile
       lxd_profile:
-        name: ubuntu1
+        name: ubuntu2
         state: present
         config: "{{ lookup('file', 'ubuntu2') | from_yaml | to_json }}"
 
