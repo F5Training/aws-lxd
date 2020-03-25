@@ -1,2 +1,2 @@
-ansible_user: localadmin
+ansible_user: ubuntu
 become: true
