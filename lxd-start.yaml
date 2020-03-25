@@ -42,7 +42,7 @@
     - name: Create ubuntu instance profiles from template
       template:
         src: ubuntu.j2
-        dest: "files/{{ ansible_hostname }}.yaml"
+        dest: "files/{{ ansible_hostname }}"
 
 - hosts: localhost
   connection: local
@@ -54,7 +54,7 @@
       lxd_profile:
         name: "{{ item }}"
         state: present
-        config: "{{ lookup('file', item + '.yaml') | from_yaml | to_json }}"
+        config: "{{ lookup('file', item) | from_yaml | to_json }}"
       loop: "{{ lookup('inventory_hostnames', 'ubuntu', wantlist=True) }}"
 
     - name: Create ubuntu containers
@@ -91,7 +91,7 @@
 
     - name: debug Cloud-init
       debug:
-        var: result
+        var: result.stdout_lines
 
     - name: setup facts for distribution info
       setup:
@@ -108,7 +108,7 @@
 
     - name: Add specified repository into sources list
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu artful stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
         state: present
 
     - name: Install required packages
@@ -126,20 +126,20 @@
     - name: Install yq
       snap:
         name:
-          -yq
+          - yq
         state: present
 
     - name: mkdir .ssh dirctory
       file:
-        path: /home/localadmin/.ssh
+        path: /home/ubuntu/.ssh
         state: directory
-        owner: localadmin
-        group: localadmin
+        owner: ubuntu
+        group: ubuntu
         mode: 0700
 
-    - name: set authorized key for localadmin copying from current user
+    - name: set authorized key for ubuntu from current user
       authorized_key:
-        user: localadmin
+        user: ubuntu
         state: present
         key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
 

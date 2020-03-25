@@ -33,8 +33,17 @@
       lxd_container:
         name: "{{ item }}"
         state: absent
-      loop: "{{ lookup('inventory_hostnames', 'ssh-hosts', wantlist=True) }}"
+      loop: "{{ lookup('inventory_hostnames', 'ssh_hosts', wantlist=True) }}"
       tags:
         - delete containers
+
+    - name: Delete profiles
+      lxd_profile:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - ubuntu1
+        - ubuntu2
+        - ansible-class
 
 ...
