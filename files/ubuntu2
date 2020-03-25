@@ -1,20 +1,17 @@
-config:
-  user.network-config: |
-    version: 1
-    config:
-      - type: physical
-        name: eth0
-        subnets:
-          - type: dhcp
-            ipv4: true
-            control: auto
-      - type: physical
-        name: eth1
-        subnets:
-          - type: static
-            ipv4: true
-            address: 10.10.0.2
-            netmask: 255.255.255.0
-            control: auto
-description: ""
-name: ubuntu2
+user.network-config: |
+  version: 1
+  config:
+    - type: physical
+      name: eth0
+      subnets:
+        - type: dhcp
+          ipv4: true
+          control: auto
+    - type: physical
+      name: eth1
+      subnets:
+        - type: static
+          ipv4: true
+          address: 10.10.0.2
+          netmask: 255.255.255.0
+          control: auto
