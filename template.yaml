@@ -1,9 +1,0 @@
-- name: test template
-  hosts: centos
-  connection: local
-  gather_facts: false
-
-  tasks:
-
-    - name: show templating results
-      debug: msg="{{ lookup('template', 'ifcfg-eth1.j2') }}"
